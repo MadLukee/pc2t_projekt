@@ -11,8 +11,8 @@ public abstract class Zamestnanec {
 
     protected Zamestnanec(String jmeno, String prijmeni, int rokNarozeni) {
         this.id = dalsiId++;
-        this.jmeno = jmeno;
-        this.prijmeni = prijmeni;
+        this.jmeno = kapitalizuj(jmeno);
+        this.prijmeni = kapitalizuj(prijmeni);
         this.rokNarozeni = rokNarozeni;
     }
     public int getId() {
@@ -22,18 +22,38 @@ public abstract class Zamestnanec {
     public String getJmeno() {
         return jmeno;
     }
+    
+    public void setJmeno(String jmeno) {
+        this.jmeno = kapitalizuj(jmeno);
+    }
 
     public String getPrijmeni() {
         return prijmeni;
     }
 
+     public void setPrijmeni(String prijmeni) {
+        this.prijmeni = kapitalizuj(prijmeni);
+    }
+
+
     public int getRokNarozeni() {
         return rokNarozeni;
     }
 
+    public void setRokNarozeni(int rokNarozeni) {
+        this.rokNarozeni = rokNarozeni;
+    }
+    
     public abstract String getSkupina();
 
     public abstract String popisDovednosti();
+
+    private static String kapitalizuj(String text) {
+        if (text == null || text.isEmpty()) {
+            return text;
+        }
+        return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
+    }
 
     @Override
     public String toString() {
