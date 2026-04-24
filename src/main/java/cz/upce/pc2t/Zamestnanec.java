@@ -15,6 +15,21 @@ public abstract class Zamestnanec {
         this.prijmeni = prijmeni;
         this.rokNarozeni = rokNarozeni;
     }
+    public int getId() {
+        return id;
+    }
+
+    public String getJmeno() {
+        return jmeno;
+    }
+
+    public String getPrijmeni() {
+        return prijmeni;
+    }
+
+    public int getRokNarozeni() {
+        return rokNarozeni;
+    }
 
     public abstract String getSkupina();
 
