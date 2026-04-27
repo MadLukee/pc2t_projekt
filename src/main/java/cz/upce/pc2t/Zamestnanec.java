@@ -1,5 +1,8 @@
 package cz.upce.pc2t;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Zamestnanec {
 
     private static int dalsiId = 1;
@@ -9,11 +12,14 @@ public abstract class Zamestnanec {
     private String prijmeni;
     private int rokNarozeni;
 
+    private final List<Spoluprace> spoluprace;
+
     protected Zamestnanec(String jmeno, String prijmeni, int rokNarozeni) {
         this.id = dalsiId++;
         this.jmeno = kapitalizuj(jmeno);
         this.prijmeni = kapitalizuj(prijmeni);
         this.rokNarozeni = rokNarozeni;
+        this.spoluprace = new ArrayList<>();
     }
     public int getId() {
         return id;
@@ -43,7 +49,19 @@ public abstract class Zamestnanec {
     public void setRokNarozeni(int rokNarozeni) {
         this.rokNarozeni = rokNarozeni;
     }
-    
+
+        public List<Spoluprace> getSpoluprace() {
+        return spoluprace;
+    }
+
+    public void pridatSpolupraci(Spoluprace spoluprace) {
+        this.spoluprace.add(spoluprace);
+    }
+
+    public boolean odstranirSpolupraci(int idSpolupracovnika) {
+        return this.spoluprace.removeIf(s -> s.getSpolupracovnik().getId() == idSpolupracovnika);
+    }
+
     public abstract String getSkupina();
 
     public abstract String popisDovednosti();
