@@ -21,7 +21,8 @@ public class Main {
                 case "1" -> pridatZamestnance();
                 case "2" -> vypsatVsechny();
                 case "3" -> vypsatPodleSkupiny();
-                case "4" -> pridatSpolupraci();    
+                case "4" -> pridatSpolupraci();
+                case "5" -> zobrazitSpoluprace();    
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -40,6 +41,7 @@ public class Main {
         System.out.println("2. Vypsat všechny zaměstnance");
         System.out.println("3. Vypsat zaměstnance podle skupiny");
         System.out.println("4. Přidat spolupráci mezi zaměstnanci");
+        System.out.println("5. Zobrazit spolupráce zaměstnance");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -172,4 +174,39 @@ public class Main {
             System.out.println("Chyba: Zaměstnanec s daným ID nebyl nalezen.");
         }
     }
+
+    private static void zobrazitSpoluprace() {
+        System.out.print("ID zaměstnance: ");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Chyba: Neplatné ID.");
+            return;
+        }
+
+        Zamestnanec zamestnanec = databaze.najitPodleId(id);
+        if (zamestnanec == null) {
+            System.out.println("Chyba: Zaměstnanec nenalezen.");
+            return;
+        }
+
+        List<Spoluprace> spoluprace = zamestnanec.getSpoluprace();
+        if (spoluprace.isEmpty()) {
+            System.out.printf("Zaměstnanec %s %s nemá žádné spolupráce.%n",
+                    zamestnanec.getJmeno(), zamestnanec.getPrijmeni());
+            return;
+        }
+
+        System.out.printf("--- Spolupráce: %s %s (ID: %d) --- (%d)%n",
+                zamestnanec.getJmeno(), zamestnanec.getPrijmeni(), id, spoluprace.size());
+        for (Spoluprace s : spoluprace) {
+            System.out.printf("  ID: %d | %s %s - úroveň: %s%n",
+                    s.getSpolupracovnik().getId(),
+                    s.getSpolupracovnik().getJmeno(),
+                    s.getSpolupracovnik().getPrijmeni(),
+                    s.getUroven());
+        }
+    }
 }
+
