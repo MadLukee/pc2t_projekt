@@ -32,4 +32,14 @@ public class DatabazZamestnancu {
     public int pocetZamestnancu() {
         return zamestnanci.size();
     }
+
+   public List<Zamestnanec> zamestnanciPodleSkupiny(String skupina) {
+        List<Zamestnanec> vysledek = new ArrayList<>();
+        for (Zamestnanec z : zamestnanci.values()) {
+            if (z.getSkupina().equals(skupina)) {
+                vysledek.add(z);
+            }
+        }
+        return vysledek;
+    }
 }
