@@ -23,7 +23,9 @@ public class Main {
                 case "3" -> vypsatPodleSkupiny();
                 case "4" -> pridatSpolupraci();
                 case "5" -> zobrazitSpoluprace();
-                case "6" -> najdiSpolecneSpolupracovniky();    
+                case "6" -> najdiSpolecneSpolupracovniky();
+                case "7" -> vypoctiRizikoveSkore();
+                case "8" -> odstranirZamestnance();    
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -44,6 +46,8 @@ public class Main {
         System.out.println("4. Přidat spolupráci mezi zaměstnanci");
         System.out.println("5. Zobrazit spolupráce zaměstnance");
         System.out.println("6. Najít společné spolupracovníky (Datový analytik)");
+        System.out.println("7. Vypočítat rizikové skóre (Bezpečnostní specialista)");
+        System.out.println("8. Odstranit zaměstnance");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -254,6 +258,64 @@ private static void najdiSpolecneSpolupracovniky() {
         for (Zamestnanec z : spolecni) {
             System.out.printf("  ID: %d | %s %s | Skupiny: %s%n",
                     z.getId(), z.getJmeno(), z.getPrijmeni(), z.getSkupina());
+        }
+    }
+
+    private static void vypoctiRizikoveSkore() {
+        System.out.print("ID bezpečnostního specialisty: ");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Chyba: Neplatné ID.");
+            return;
+        }
+
+        Zamestnanec zamestnanec = databaze.najitPodleId(id);
+        if (zamestnanec == null) {
+            System.out.println("Chyba: Zaměstnanec nenalezen.");
+            return;
+        }
+
+        if (!(zamestnanec instanceof SecuritySpecialist specialista)) {
+            System.out.println("Chyba: Zaměstnanec není bezpečnostní specialista.");
+            return;
+        }
+
+        double skore = specialista.vypoctiRizikoveSkore();
+        System.out.printf("Rizikové skóre pro %s %s: %.2f%n",
+                specialista.getJmeno(), specialista.getPrijmeni(), skore);
+    }
+
+
+    private static void odstranirZamestnance() {
+        System.out.print("ID zaměstnance k odstranění: ");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Chyba: Neplatné ID.");
+            return;
+        }
+
+        Zamestnanec z = databaze.najitPodleId(id);
+        if (z == null) {
+            System.out.println("Chyba: Zaměstnanec nenalezen.");
+            return;
+        }
+
+        System.out.printf("Jste si jistí, že chcete odstranit %s %s (ID: %d)? (ano/ne): ",
+                z.getJmeno(), z.getPrijmeni(), z.getId());
+        String potvrzeni = scanner.nextLine().trim();
+
+        if ("ano".equalsIgnoreCase(potvrzeni)) {
+            if (databaze.odstranit(id)) {
+                System.out.println("Zaměstnanec byl odstraněn včetně všech vazeb.");
+            } else {
+                System.out.println("Chyba: Zaměstnance se nepodařilo odstranit.");
+            }
+        } else {
+            System.out.println("Operace byla zrušena.");
         }
     }
 }
