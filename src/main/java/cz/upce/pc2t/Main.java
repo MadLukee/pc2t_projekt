@@ -1,6 +1,7 @@
 package cz.upce.pc2t;
 
 import java.util.Scanner;
+import java.util.List;
 
 public class Main {
     
@@ -18,6 +19,7 @@ public class Main {
 
             switch (volba) {
                 case "1" -> pridatZamestnance();
+                case "2" -> vypsatVsechny();
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -33,6 +35,7 @@ public class Main {
     private static void zobrazitMenu() {
         System.out.println("--- Hlavní nabídka ---");
         System.out.println("1. Přidat zaměstnance");
+        System.out.println("2. Vypsat všechny zaměstnance");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -71,5 +74,19 @@ public class Main {
 
         databaze.pridatZamestnance(zamestnanec);
         System.out.printf("Zaměstnanec přidán: %s (ID: %d)%n", zamestnanec, zamestnanec.getId());
+    }
+    
+    private static void vypsatVsechny() {
+        List<Zamestnanec> seznam = databaze.vsichniZamestnanci();
+        if (seznam.isEmpty()) {
+            System.out.println("Databáze je prázdná.");
+            return;
+        }
+
+        System.out.printf("--- Všichni zaměstnanci --- (%d)%n", seznam.size());
+        for (Zamestnanec z : seznam) {
+            System.out.printf("  ID: %d | %s %s | Skupiny: %s | Rok: %d | Spolupráce: %d%n",
+                    z.getId(), z.getJmeno(), z.getPrijmeni(), z.getSkupina(), z.getRokNarozeni(), z.getSpoluprace().size());
+        }
     }
 }
