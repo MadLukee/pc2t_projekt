@@ -20,6 +20,7 @@ public class Main {
             switch (volba) {
                 case "1" -> pridatZamestnance();
                 case "2" -> vypsatVsechny();
+                case "3" -> vypsatPodleSkupiny();
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -36,6 +37,7 @@ public class Main {
         System.out.println("--- Hlavní nabídka ---");
         System.out.println("1. Přidat zaměstnance");
         System.out.println("2. Vypsat všechny zaměstnance");
+        System.out.println("3. Vypsat zaměstnance podle skupiny");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -87,6 +89,36 @@ public class Main {
         for (Zamestnanec z : seznam) {
             System.out.printf("  ID: %d | %s %s | Skupiny: %s | Rok: %d | Spolupráce: %d%n",
                     z.getId(), z.getJmeno(), z.getPrijmeni(), z.getSkupina(), z.getRokNarozeni(), z.getSpoluprace().size());
+        }
+    }
+
+    private static void vypsatPodleSkupiny() {
+        System.out.println("Vyberte skupinu:");
+        System.out.println("1. Datový analytik");
+        System.out.println("2. Bezpečnostní specialista");
+        System.out.print("Volba: ");
+        String volba = scanner.nextLine().trim();
+
+        String skupina;
+        switch (volba) {
+            case "1" -> skupina = "Datový analytik";
+            case "2" -> skupina = "Bezpečnostní specialista";
+            default -> {
+                System.out.println("Chyba: Neplatná volba.");
+                return;
+            }
+        }
+
+        List<Zamestnanec> seznam = databaze.zamestnanciPodleSkupiny(skupina);
+        if (seznam.isEmpty()) {
+            System.out.printf("Žádní zaměstnanci ve skupině '%s'.%n", skupina);
+            return;
+        }
+
+        System.out.printf("--- Skupina: %s --- (%d)%n", skupina, seznam.size());
+        for (Zamestnanec z : seznam) {
+            System.out.printf("  ID: %d | %s %s | Rok: %d | Spolupráce: %d%n",
+                    z.getId(), z.getJmeno(), z.getPrijmeni(), z.getRokNarozeni(), z.getSpoluprace().size());
         }
     }
 }
