@@ -22,7 +22,8 @@ public class Main {
                 case "2" -> vypsatVsechny();
                 case "3" -> vypsatPodleSkupiny();
                 case "4" -> pridatSpolupraci();
-                case "5" -> zobrazitSpoluprace();    
+                case "5" -> zobrazitSpoluprace();
+                case "6" -> najdiSpolecneSpolupracovniky();    
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -42,6 +43,7 @@ public class Main {
         System.out.println("3. Vypsat zaměstnance podle skupiny");
         System.out.println("4. Přidat spolupráci mezi zaměstnanci");
         System.out.println("5. Zobrazit spolupráce zaměstnance");
+        System.out.println("6. Najít společné spolupracovníky (Datový analytik)");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -206,6 +208,52 @@ public class Main {
                     s.getSpolupracovnik().getJmeno(),
                     s.getSpolupracovnik().getPrijmeni(),
                     s.getUroven());
+        }
+    }
+
+private static void najdiSpolecneSpolupracovniky() {
+        System.out.print("ID prvního datového analytika: ");
+        int id1;
+        try {
+            id1 = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Chyba: Neplatné ID.");
+            return;
+        }
+
+        System.out.print("ID druhého zaměstnance: ");
+        int id2;
+        try {
+            id2 = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Chyba: Neplatné ID.");
+            return;
+        }
+
+        Zamestnanec z1 = databaze.najitPodleId(id1);
+        Zamestnanec z2 = databaze.najitPodleId(id2);
+
+        if (z1 == null || z2 == null) {
+            System.out.println("Chyba: Zaměstnanec nenalezen.");
+            return;
+        }
+
+        if (!(z1 instanceof DataAnalyst analytik)) {
+            System.out.println("Chyba: První zaměstnanec není datový analytik.");
+            return;
+        }
+
+        List<Zamestnanec> spolecni = analytik.najdiSpolecneSpolupracovniky(z2);
+        if (spolecni.isEmpty()) {
+            System.out.println("Žádní společní spolupracovníci nebyli nalezeni.");
+            return;
+        }
+
+        System.out.printf("--- Společní spolupracovníci mezi %s (ID: %d) a %s (ID: %d) --- (%d)%n",
+                z1.getJmeno(), z1.getId(), z2.getJmeno(), z2.getId(), spolecni.size());
+        for (Zamestnanec z : spolecni) {
+            System.out.printf("  ID: %d | %s %s | Skupiny: %s%n",
+                    z.getId(), z.getJmeno(), z.getPrijmeni(), z.getSkupina());
         }
     }
 }
