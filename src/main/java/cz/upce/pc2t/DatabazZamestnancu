@@ -43,6 +43,19 @@ public class DatabazZamestnancu {
         return vysledek;
     }
 
+    public boolean odstranit(int id) {
+        Zamestnanec z = zamestnanci.remove(id);
+        if (z == null) {
+            return false;
+        }
+
+        for (Zamestnanec zamestnanec : zamestnanci.values()) {
+            zamestnanec.getSpoluprace().removeIf(s -> s.getSpolupracovnik().getId() == id);
+        }
+
+        return true;
+    }
+
 public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
         if (id1 == id2) {
             return false;
