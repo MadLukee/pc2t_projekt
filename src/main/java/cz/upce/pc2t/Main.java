@@ -21,6 +21,7 @@ public class Main {
                 case "1" -> pridatZamestnance();
                 case "2" -> vypsatVsechny();
                 case "3" -> vypsatPodleSkupiny();
+                case "4" -> pridatSpolupraci();    
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -38,6 +39,7 @@ public class Main {
         System.out.println("1. Přidat zaměstnance");
         System.out.println("2. Vypsat všechny zaměstnance");
         System.out.println("3. Vypsat zaměstnance podle skupiny");
+        System.out.println("4. Přidat spolupráci mezi zaměstnanci");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -119,6 +121,55 @@ public class Main {
         for (Zamestnanec z : seznam) {
             System.out.printf("  ID: %d | %s %s | Rok: %d | Spolupráce: %d%n",
                     z.getId(), z.getJmeno(), z.getPrijmeni(), z.getRokNarozeni(), z.getSpoluprace().size());
+        }
+    }
+    
+    private static void pridatSpolupraci() {
+        System.out.print("ID prvního zaměstnance: ");
+        int id1;
+        try {
+            id1 = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Chyba: Neplatné ID.");
+            return;
+        }
+
+        System.out.print("ID druhého zaměstnance: ");
+        int id2;
+        try {
+            id2 = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Chyba: Neplatné ID.");
+            return;
+        }
+
+        if (id1 == id2) {
+            System.out.println("Chyba: Zaměstnanec se nemůže spolupracovat sám se sebou.");
+            return;
+        }
+
+        System.out.println("Úroveň spolupráce:");
+        System.out.println("1. Špatná");
+        System.out.println("2. Průměrná");
+        System.out.println("3. Dobrá");
+        System.out.print("Volba: ");
+        String volbaUrovne = scanner.nextLine().trim();
+
+        UrovenSpoluprace uroven;
+        switch (volbaUrovne) {
+            case "1" -> uroven = UrovenSpoluprace.SPATNA;
+            case "2" -> uroven = UrovenSpoluprace.PRUMERNA;
+            case "3" -> uroven = UrovenSpoluprace.DOBRA;
+            default -> {
+                System.out.println("Chyba: Neplatná úroveň.");
+                return;
+            }
+        }
+
+        if (databaze.pridatSpolupraci(id1, id2, uroven)) {
+            System.out.println("Spolupráce úspěšně přidána.");
+        } else {
+            System.out.println("Chyba: Zaměstnanec s daným ID nebyl nalezen.");
         }
     }
 }
