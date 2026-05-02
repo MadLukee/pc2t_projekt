@@ -15,4 +15,20 @@ public class SecuritySpecialist extends Zamestnanec {
     public String popisDovednosti() {
         return "Bezpečnostní analýza, výpočet rizikového skóre";
     }
+
+    public double vypoctiRizikoveSkore() {
+        if (getSpoluprace().isEmpty()) {
+            return 0.0;
+        }
+
+        double skore = 0.0;
+        for (Spoluprace s : getSpoluprace()) {
+            switch (s.getUroven()) {
+                case SPATNA -> skore += 3.0;
+                case PRUMERNA -> skore += 1.0;
+                case DOBRA -> skore += 0.5;
+            }
+        }
+        return skore / getSpoluprace().size();
+    }
 }
