@@ -42,4 +42,27 @@ public class DatabazZamestnancu {
         }
         return vysledek;
     }
+
+public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
+        if (id1 == id2) {
+            return false;
+        }
+
+        Zamestnanec z1 = najitPodleId(id1);
+        Zamestnanec z2 = najitPodleId(id2);
+
+        if (z1 == null || z2 == null) {
+            return false;
+        }
+
+        for (Spoluprace s : z1.getSpoluprace()) {
+            if (s.getSpolupracovnik().getId() == id2) {
+                return false;
+            }
+        }
+
+        z1.pridatSpolupraci(new Spoluprace(z2, uroven));
+        z2.pridatSpolupraci(new Spoluprace(z1, uroven));
+        return true;
+    }
 }
