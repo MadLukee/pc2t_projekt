@@ -1,0 +1,35 @@
+package cz.upce.pc2t;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class DatabazZamestnancu {
+
+    private final Map<Integer, Zamestnanec> zamestnanci;
+
+    public DatabazZamestnancu() {
+        this.zamestnanci = new HashMap<>();
+    }
+
+    public boolean pridatZamestnance(Zamestnanec zamestnanec) {
+        if (zamestnanci.containsKey(zamestnanec.getId())) {
+            return false;
+        }
+        zamestnanci.put(zamestnanec.getId(), zamestnanec);
+        return true;
+    }
+
+    public Zamestnanec najitPodleId(int id) {
+        return zamestnanci.get(id);
+    }
+
+    public List<Zamestnanec> vsichniZamestnanci() {
+        return new ArrayList<>(zamestnanci.values());
+    }
+
+    public int pocetZamestnancu() {
+        return zamestnanci.size();
+    }
+}
