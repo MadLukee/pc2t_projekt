@@ -1,6 +1,7 @@
 package cz.upce.pc2t;
 
 import java.util.Scanner;
+import java.util.Map;
 import java.util.List;
 
 public class Main {
@@ -25,7 +26,8 @@ public class Main {
                 case "5" -> zobrazitSpoluprace();
                 case "6" -> najdiSpolecneSpolupracovniky();
                 case "7" -> vypoctiRizikoveSkore();
-                case "8" -> odstranirZamestnance();    
+                case "8" -> odstranirZamestnance();
+                case "9" -> vyhledatZamestnance();    
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -48,6 +50,7 @@ public class Main {
         System.out.println("6. Najít společné spolupracovníky (Datový analytik)");
         System.out.println("7. Vypočítat rizikové skóre (Bezpečnostní specialista)");
         System.out.println("8. Odstranit zaměstnance");
+        System.out.println("9. Vyhledat zaměstnance podle ID");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -215,7 +218,7 @@ public class Main {
         }
     }
 
-private static void najdiSpolecneSpolupracovniky() {
+    private static void najdiSpolecneSpolupracovniky() {
         System.out.print("ID prvního datového analytika: ");
         int id1;
         try {
@@ -287,7 +290,6 @@ private static void najdiSpolecneSpolupracovniky() {
                 specialista.getJmeno(), specialista.getPrijmeni(), skore);
     }
 
-
     private static void odstranirZamestnance() {
         System.out.print("ID zaměstnance k odstranění: ");
         int id;
@@ -316,6 +318,43 @@ private static void najdiSpolecneSpolupracovniky() {
             }
         } else {
             System.out.println("Operace byla zrušena.");
+        }
+    }
+
+    private static void vyhledatZamestnance() {
+        System.out.print("ID zaměstnance: ");
+        int id;
+        try {
+            id = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Chyba: Neplatné ID.");
+            return;
+        }
+
+        Map<String, Object> stat = databaze.ziskejStatistikyZamestnance(id);
+        if (stat == null) {
+            System.out.println("Chyba: Zaměstnanec nenalezen.");
+            return;
+        }
+
+        System.out.println("--- Detaily zaměstnance ---");
+        System.out.printf("ID: %d%n", stat.get("id"));
+        System.out.printf("Jméno: %s %s%n", stat.get("jmeno"), stat.get("prijmeni"));
+        System.out.printf("Skupiny: %s%n", stat.get("skupina"));
+        System.out.printf("Rok narození: %d%n", stat.get("rokNarozeni"));
+        System.out.printf("Počet spolupráce: %d%n", stat.get("pocetSpoluprace"));
+
+        @SuppressWarnings("unchecked")
+        Map<UrovenSpoluprace, Integer> pocty = (Map<UrovenSpoluprace, Integer>) stat.get("poctyUroven");
+        if (!pocty.isEmpty()) {
+            System.out.println("Spolupráce podle úrovně:");
+            for (Map.Entry<UrovenSpoluprace, Integer> entry : pocty.entrySet()) {
+                System.out.printf("  %s: %d%n", entry.getKey(), entry.getValue());
+            }
+        }
+
+        if (stat.containsKey("prumerSkore")) {
+            System.out.printf("Průměrné skóre: %.2f%n", stat.get("prumerSkore"));
         }
     }
 }
