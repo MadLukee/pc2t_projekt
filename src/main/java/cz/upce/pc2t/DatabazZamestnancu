@@ -92,6 +92,15 @@ public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
         return seznam;
     }
 
+ public Map<String, Integer> poctyPodleSkupin() {
+        Map<String, Integer> pocty = new HashMap<>();
+        for (Zamestnanec z : zamestnanci.values()) {
+            String skupina = z.getSkupina();
+            pocty.put(skupina, pocty.getOrDefault(skupina, 0) + 1);
+        }
+        return pocty;
+    }
+
 public Zamestnanec naleziNejviceSpolupracovniku() {
         return zamestnanci.values().stream()
                 .max((a, b) -> Integer.compare(a.getSpoluprace().size(), b.getSpoluprace().size()))
