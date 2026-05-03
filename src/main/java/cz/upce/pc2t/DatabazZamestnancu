@@ -1,6 +1,7 @@
 package cz.upce.pc2t;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +90,29 @@ public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
         List<Zamestnanec> seznam = zamestnanciPodleSkupiny(skupina);
         seznam.sort((a, b) -> a.getPrijmeni().compareTo(b.getPrijmeni()));
         return seznam;
+    }
+
+public Zamestnanec naleziNejviceSpolupracovniku() {
+        return zamestnanci.values().stream()
+                .max((a, b) -> Integer.compare(a.getSpoluprace().size(), b.getSpoluprace().size()))
+                .orElse(null);
+    }
+
+    public UrovenSpoluprace prevaziJiciUroven() {
+        Map<UrovenSpoluprace, Integer> pocty = new HashMap<>();
+
+        for (Zamestnanec z : zamestnanci.values()) {
+            for (Spoluprace s : z.getSpoluprace()) {
+                UrovenSpoluprace uroven = s.getUroven();
+                pocty.put(uroven, pocty.getOrDefault(uroven, 0) + 1);
+            }
+        }
+
+        if (pocty.isEmpty()) {
+            return null;
+        }
+
+        return Collections.max(pocty.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
      public Map<String, Object> ziskejStatistikyZamestnance(int id) {
