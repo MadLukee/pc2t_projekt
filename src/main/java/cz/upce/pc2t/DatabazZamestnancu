@@ -78,4 +78,41 @@ public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
         z2.pridatSpolupraci(new Spoluprace(z1, uroven));
         return true;
     }
+
+     public Map<String, Object> ziskejStatistikyZamestnance(int id) {
+        Zamestnanec z = najitPodleId(id);
+        if (z == null) {
+            return null;
+        }
+
+        Map<String, Object> statistiky = new HashMap<>();
+        statistiky.put("jmeno", z.getJmeno());
+        statistiky.put("prijmeni", z.getPrijmeni());
+        statistiky.put("id", z.getId());
+        statistiky.put("skupina", z.getSkupina());
+        statistiky.put("rokNarozeni", z.getRokNarozeni());
+        statistiky.put("pocetSpoluprace", z.getSpoluprace().size());
+
+        Map<UrovenSpoluprace, Integer> poctyUroven = new HashMap<>();
+        for (Spoluprace s : z.getSpoluprace()) {
+            UrovenSpoluprace uroven = s.getUroven();
+            poctyUroven.put(uroven, poctyUroven.getOrDefault(uroven, 0) + 1);
+        }
+        statistiky.put("poctyUroven", poctyUroven);
+
+        if (!z.getSpoluprace().isEmpty()) {
+            double soucet = 0;
+            for (Spoluprace s : z.getSpoluprace()) {
+                switch (s.getUroven()) {
+                    case SPATNA -> soucet += 1.0;
+                    case PRUMERNA -> soucet += 2.0;
+                    case DOBRA -> soucet += 3.0;
+                }
+            }
+            double priemer = soucet / z.getSpoluprace().size();
+            statistiky.put("prumerSkore", priemer);
+        }
+
+        return statistiky;
+    }
 }
