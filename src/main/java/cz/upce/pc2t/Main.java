@@ -30,6 +30,7 @@ public class Main {
                 case "9" -> vyhledatZamestnance(); 
                 case "10" -> vypsatAbecedne();
                 case "11" -> zobrazitiStatistiky();
+                case "12" -> zobrazitPoctySkupin();
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -55,6 +56,7 @@ public class Main {
         System.out.println("9. Vyhledat zaměstnance podle ID");
         System.out.println("10. Vypsat zaměstnance abecedně");
         System.out.println("11. Zobrazit statistiky");
+        System.out.println("12. Zobrazit počty zaměstnanců ve skupinách");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -417,5 +419,21 @@ public class Main {
             System.out.println("Žádné spolupráce v databázi.");
         }
     }
-}
 
+private static void zobrazitPoctySkupin() {
+        System.out.println("--- Počty zaměstnanců ve skupinách ---");
+        Map<String, Integer> pocty = databaze.poctyPodleSkupin();
+
+        if (pocty.isEmpty()) {
+            System.out.println("Databáze je prázdná.");
+            return;
+        }
+
+        for (Map.Entry<String, Integer> entry : pocty.entrySet()) {
+            System.out.printf("%s: %d%n", entry.getKey(), entry.getValue());
+        }
+
+        int celkem = databaze.pocetZamestnancu();
+        System.out.printf("Celkem: %d%n", celkem);
+    }
+}
