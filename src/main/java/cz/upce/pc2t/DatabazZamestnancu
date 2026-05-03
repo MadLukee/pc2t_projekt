@@ -79,6 +79,18 @@ public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
         return true;
     }
 
+     public List<Zamestnanec> vsichniAbecedne() {
+        List<Zamestnanec> seznam = new ArrayList<>(zamestnanci.values());
+        seznam.sort((a, b) -> a.getPrijmeni().compareTo(b.getPrijmeni()));
+        return seznam;
+    }
+
+    public List<Zamestnanec> skupinaPodleAbecedy(String skupina) {
+        List<Zamestnanec> seznam = zamestnanciPodleSkupiny(skupina);
+        seznam.sort((a, b) -> a.getPrijmeni().compareTo(b.getPrijmeni()));
+        return seznam;
+    }
+
      public Map<String, Object> ziskejStatistikyZamestnance(int id) {
         Zamestnanec z = najitPodleId(id);
         if (z == null) {
