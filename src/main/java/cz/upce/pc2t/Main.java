@@ -27,7 +27,9 @@ public class Main {
                 case "6" -> najdiSpolecneSpolupracovniky();
                 case "7" -> vypoctiRizikoveSkore();
                 case "8" -> odstranirZamestnance();
-                case "9" -> vyhledatZamestnance();    
+                case "9" -> vyhledatZamestnance(); 
+                case "10" -> vypsatAbecedne();
+                case "11" -> zobrazitiStatistiky();
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -51,6 +53,8 @@ public class Main {
         System.out.println("7. Vypočítat rizikové skóre (Bezpečnostní specialista)");
         System.out.println("8. Odstranit zaměstnance");
         System.out.println("9. Vyhledat zaměstnance podle ID");
+        System.out.println("10. Vypsat zaměstnance abecedně");
+        System.out.println("11. Zobrazit statistiky");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -355,6 +359,62 @@ public class Main {
 
         if (stat.containsKey("prumerSkore")) {
             System.out.printf("Průměrné skóre: %.2f%n", stat.get("prumerSkore"));
+        }
+    }
+
+    private static void vypsatAbecedne() {
+        System.out.println("1. Všichni zaměstnanci");
+        System.out.println("2. Datový analytik");
+        System.out.println("3. Bezpečnostní specialista");
+        System.out.print("Volba: ");
+        String volba = scanner.nextLine().trim();
+
+        List<Zamestnanec> seznam = null;
+        String nadpis = "";
+
+        switch (volba) {
+            case "1" -> {
+                seznam = databaze.vsichniAbecedne();
+                nadpis = "Všichni zaměstnanci (abecedně)";
+            }
+            case "2" -> {
+                seznam = databaze.skupinaPodleAbecedy("Datový analytik");
+                nadpis = "Datoví analytici (abecedně)";
+            }
+            case "3" -> {
+                seznam = databaze.skupinaPodleAbecedy("Bezpečnostní specialista");
+                nadpis = "Bezpečnostní specialisté (abecedně)";
+            }
+            default -> System.out.println("Neplatná volba.");
+        }
+
+        if (seznam != null) {
+            if (seznam.isEmpty()) {
+                System.out.println("Žádní zaměstnanci.");
+                return;
+            }
+            System.out.printf("--- %s --- (%d)%n", nadpis, seznam.size());
+            for (Zamestnanec z : seznam) {
+                System.out.printf("  ID: %d | %s %s | Rok: %d | Spolupráce: %d%n",
+                        z.getId(), z.getJmeno(), z.getPrijmeni(), z.getRokNarozeni(), z.getSpoluprace().size());
+            }
+        }
+    }
+
+    private static void zobrazitiStatistiky() {
+        System.out.println("--- Statistiky databáze ---");
+
+        Zamestnanec nejVic = databaze.naleziNejviceSpolupracovniku();
+        if (nejVic != null) {
+            System.out.printf("Zaměstnanec s nejvíce vazbami: %s %s (ID: %d) - %d vazeb%n",
+                    nejVic.getJmeno(), nejVic.getPrijmeni(), nejVic.getId(), nejVic.getSpoluprace().size());
+        }
+
+        UrovenSpoluprace prevaziJici = databaze.prevaziJiciUroven();
+        if (prevaziJici != null) {
+            System.out.printf("Převažující úroveň spolupráce: %s%n", prevaziJici);
+        } else {
+            System.out.println("Žádné spolupráce v databázi.");
         }
     }
 }
