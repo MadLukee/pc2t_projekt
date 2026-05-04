@@ -11,6 +11,10 @@ public class DataAnalyst extends Zamestnanec {
         super(jmeno, prijmeni, rokNarozeni);
     }
 
+    public DataAnalyst(int id, String jmeno, String prijmeni, int rokNarozeni) {
+        super(id, jmeno, prijmeni, rokNarozeni);
+    }
+
     @Override
     public String getSkupina() {
         return "Datový analytik";
