@@ -8,6 +8,7 @@ public class Main {
     
     private static final DatabazZamestnancu databaze = new DatabazZamestnancu();
     private static final Scanner scanner = new Scanner(System.in);
+    private static final String ZAMESTNANCI_SOUBOR = "zamestnanci.txt";
 
     public static void main(String[] args) {
         System.out.println("=== Databáze zaměstnanců ===");
@@ -31,6 +32,8 @@ public class Main {
                 case "10" -> vypsatAbecedne();
                 case "11" -> zobrazitiStatistiky();
                 case "12" -> zobrazitPoctySkupin();
+                case "13" -> ulozitDoSouboru(); 
+                case "14" -> nacistZeSouboru();
                 case "0" -> {
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -57,6 +60,8 @@ public class Main {
         System.out.println("10. Vypsat zaměstnance abecedně");
         System.out.println("11. Zobrazit statistiky");
         System.out.println("12. Zobrazit počty zaměstnanců ve skupinách");
+        System.out.println("13. Uložit zaměstnance do souboru");
+        System.out.println("14. Načíst zaměstnance ze souboru");
         System.out.println("0. Ukončit");
         System.out.print("Vaše volba: ");
     }
@@ -78,6 +83,19 @@ public class Main {
         int rokNarozeni;
         try {
             rokNarozeni = Integer.parseInt(scanner.nextLine().trim());
+            int letosniRok = java.time.Year.now().getValue();
+            if (rokNarozeni > letosniRok) {
+                System.out.println("Chyba: Rok narození nemůže být v budoucnosti.");
+                return;
+            }
+            if (rokNarozeni < letosniRok - 100) {
+                System.out.println("Chyba: Rok narození je příliš starý (max 100 let).");
+                return;
+            }
+            if (rokNarozeni < 1900) {
+                System.out.println("Chyba: Rok narození musí být nejméně 1900.");
+                return;
+            }
         } catch (NumberFormatException e) {
             System.out.println("Chyba: Neplatný rok narození.");
             return;
@@ -93,6 +111,12 @@ public class Main {
             }
         }
 
+        if (databaze.existujeZamestnnanec(jmeno, prijmeni, rokNarozeni)) {
+            System.out.printf("Chyba: Zaměstnanec %s %s (nar. %d) již existuje v databázi.%n",
+                    jmeno, prijmeni, rokNarozeni);
+            return;
+        }
+        
         databaze.pridatZamestnance(zamestnanec);
         System.out.printf("Zaměstnanec přidán: %s (ID: %d)%n", zamestnanec, zamestnanec.getId());
     }
@@ -435,5 +459,36 @@ private static void zobrazitPoctySkupin() {
 
         int celkem = databaze.pocetZamestnancu();
         System.out.printf("Celkem: %d%n", celkem);
+    }
+
+    private static void ulozitDoSouboru() {
+        System.out.print("Název souboru (Enter pro výchozí 'zamestnanci.txt'): ");
+        String soubor = scanner.nextLine().trim();
+        if (soubor.isEmpty()) {
+            soubor = ZAMESTNANCI_SOUBOR;
+        }
+
+        int pocet = FileIO.ulozitVsechny(soubor, databaze);
+        if (pocet > 0) {
+            System.out.printf("Uloženo %d zaměstnanců do souboru '%s'.%n", pocet, soubor);
+        } else {
+            System.out.println("Chyba při ukládání do souboru.");
+        }
+    }
+
+    private static void nacistZeSouboru() {
+        System.out.print("Název souboru (Enter pro výchozí 'zamestnanci.txt'): ");
+        String soubor = scanner.nextLine().trim();
+        if (soubor.isEmpty()) {
+            soubor = ZAMESTNANCI_SOUBOR;
+        }
+
+        int pocet = FileIO.nacistZamestnance(soubor, databaze);
+        if (pocet > 0) {
+            System.out.printf("Načteno %d zaměstnanců ze souboru '%s'.%n", pocet, soubor);
+            databaze.obnoviPocitadloID();
+        } else {
+            System.out.println("Chyba při načítání ze souboru.");
+        }
     }
 }
