@@ -34,6 +34,16 @@ public class DatabazZamestnancu {
         return zamestnanci.size();
     }
 
+     public void obnoviPocitadloID() {
+        if (zamestnanci.isEmpty()) {
+            Zamestnanec.resetIdPocitadlo();
+            return;
+        }
+
+        int maxId = zamestnanci.keySet().stream().mapToInt(Integer::intValue).max().orElse(0);
+        Zamestnanec.nastavitDalsiId(maxId + 1);
+    }
+
    public List<Zamestnanec> zamestnanciPodleSkupiny(String skupina) {
         List<Zamestnanec> vysledek = new ArrayList<>();
         for (Zamestnanec z : zamestnanci.values()) {
@@ -159,5 +169,16 @@ public Zamestnanec naleziNejviceSpolupracovniku() {
         }
 
         return statistiky;
+    }
+
+    public boolean existujeZamestnnanec(String jmeno, String prijmeni, int rokNarozeni) {
+        for (Zamestnanec z : zamestnanci.values()) {
+            if (z.getJmeno().equalsIgnoreCase(jmeno) &&
+                    z.getPrijmeni().equalsIgnoreCase(prijmeni) &&
+                    z.getRokNarozeni() == rokNarozeni) {
+                return true;
+            }
+        }
+        return false;
     }
 }
