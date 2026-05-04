@@ -6,6 +6,10 @@ public class SecuritySpecialist extends Zamestnanec {
         super(jmeno, prijmeni, rokNarozeni);
     }
 
+    public SecuritySpecialist(int id, String jmeno, String prijmeni, int rokNarozeni) {
+        super(id, jmeno, prijmeni, rokNarozeni);
+    }
+    
     @Override
     public String getSkupina() {
         return "Bezpečnostní specialista";
