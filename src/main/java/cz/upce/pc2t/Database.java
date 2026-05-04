@@ -48,4 +48,75 @@ public class Database {
             e.printStackTrace();
         }
     }
+
+     public static int nacistVsechny(DatabazZamestnancu databaze) {
+        int pocet = 0;
+        String sql = "SELECT id, jmeno, prijmeni, rokNarozeni, typ FROM zamestnanci";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement()) {
+
+            stmt.execute("PRAGMA foreign_keys=ON");
+
+            System.out.println("=== Načítání z SQL databáze ===");
+
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String jmeno = rs.getString("jmeno");
+                String prijmeni = rs.getString("prijmeni");
+                int rokNarozeni = rs.getInt("rokNarozeni");
+                String typ = rs.getString("typ");
+
+                Zamestnanec z;
+                if ("DA".equals(typ)) {
+                    z = new DataAnalyst(id, jmeno, prijmeni, rokNarozeni);
+                } else {
+                    z = new SecuritySpecialist(id, jmeno, prijmeni, rokNarozeni);
+                }
+
+                if (databaze.pridatZamestnance(z)) {
+                    pocet++;
+                    System.out.printf("  ✓ Načten: ID %d - %s %s%n", z.getId(), z.getJmeno(), z.getPrijmeni());
+                }
+            }
+            rs.close();
+
+            System.out.printf("Načteno: %d zaměstnanců%n", pocet);
+
+            nacistSpoluprace(databaze);
+
+            if (pocet > 0) {
+                databaze.obnoviPocitadloID();
+            }
+
+            System.out.println("=== Načítání dokončeno ===\n");
+
+        } catch (SQLException e) {
+            System.out.println("Chyba při načítání dat: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return pocet;
+    }
+
+    private static void nacistSpoluprace(DatabazZamestnancu databaze) {
+        String sql = "SELECT idZamestnance1, idZamestnance2, uroven FROM spoluprace";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                int id1 = rs.getInt("idZamestnance1");
+                int id2 = rs.getInt("idZamestnance2");
+                String uroven = rs.getString("uroven");
+
+                UrovenSpoluprace urov = UrovenSpoluprace.valueOf(uroven);
+                databaze.pridatSpolupraci(id1, id2, urov);
+            }
+        } catch (SQLException e) {
+            System.out.println("Chyba při načítání spolupráce: " + e.getMessage());
+        }
+    }
 }
