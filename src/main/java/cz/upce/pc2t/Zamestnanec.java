@@ -21,6 +21,15 @@ public abstract class Zamestnanec {
         this.rokNarozeni = rokNarozeni;
         this.spoluprace = new ArrayList<>();
     }
+
+    protected Zamestnanec(int id, String jmeno, String prijmeni, int rokNarozeni) {
+        this.id = id;
+        this.jmeno = kapitalizuj(jmeno);
+        this.prijmeni = kapitalizuj(prijmeni);
+        this.rokNarozeni = rokNarozeni;
+        this.spoluprace = new ArrayList<>();
+    }
+    
     public int getId() {
         return id;
     }
@@ -40,7 +49,6 @@ public abstract class Zamestnanec {
      public void setPrijmeni(String prijmeni) {
         this.prijmeni = kapitalizuj(prijmeni);
     }
-
 
     public int getRokNarozeni() {
         return rokNarozeni;
@@ -65,6 +73,15 @@ public abstract class Zamestnanec {
     public abstract String getSkupina();
 
     public abstract String popisDovednosti();
+
+    public static void resetIdPocitadlo() {
+        dalsiId = 1;
+    }
+
+    public static void nastavitDalsiId(int novaHodnota) {
+        dalsiId = novaHodnota;
+    }
+
 
     private static String kapitalizuj(String text) {
         if (text == null || text.isEmpty()) {
