@@ -14,6 +14,15 @@ public class Main {
         System.out.println("=== Databáze zaměstnanců ===");
          System.out.println();
 
+         Database.inicializovat();
+
+        if (databaze.pocetZamestnancu() == 0) {
+            int nacten = Database.nacistVsechny(databaze);
+            if (nacten > 0) {
+                System.out.printf("Načteno %d zaměstnanců z databáze.%n", nacten);
+            }
+        }
+
         boolean bezi = true;
         while (bezi) {
             zobrazitMenu();
@@ -35,6 +44,12 @@ public class Main {
                 case "13" -> ulozitDoSouboru(); 
                 case "14" -> nacistZeSouboru();
                 case "0" -> {
+                    int ulozeno = Database.ulozitVsechny(databaze);
+                    System.out.printf("Uloženo %d zaměstnanců do databáze.%n", ulozeno);
+
+                    int ulozeno_soubor = FileIO.ulozitVsechny(ZAMESTNANCI_SOUBOR, databaze);
+                    System.out.printf("Uloženo %d zaměstnanců do souboru '%s'.%n", ulozeno_soubor, ZAMESTNANCI_SOUBOR);
+
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
                 }
@@ -62,7 +77,7 @@ public class Main {
         System.out.println("12. Zobrazit počty zaměstnanců ve skupinách");
         System.out.println("13. Uložit zaměstnance do souboru");
         System.out.println("14. Načíst zaměstnance ze souboru");
-        System.out.println("0. Ukončit");
+        System.out.println("0. Ukončit (uloží data do SQL databáze)");
         System.out.print("Vaše volba: ");
     }
 
