@@ -30,10 +30,6 @@ public class DatabazZamestnancu {
         return new ArrayList<>(zamestnanci.values());
     }
 
-    public int pocetZamestnancu() {
-        return zamestnanci.size();
-    }
-
      public void obnoviPocitadloID() {
         if (zamestnanci.isEmpty()) {
             Zamestnanec.resetIdPocitadlo();
@@ -43,7 +39,6 @@ public class DatabazZamestnancu {
         int maxId = zamestnanci.keySet().stream().mapToInt(Integer::intValue).max().orElse(0);
         Zamestnanec.nastavitDalsiId(maxId + 1);
     }
-
    public List<Zamestnanec> zamestnanciPodleSkupiny(String skupina) {
         List<Zamestnanec> vysledek = new ArrayList<>();
         for (Zamestnanec z : zamestnanci.values()) {
@@ -53,24 +48,6 @@ public class DatabazZamestnancu {
         }
         return vysledek;
     }
-
-    public boolean odstranit(int id) {
-        Zamestnanec z = zamestnanci.remove(id);
-        if (z == null) {
-            return false;
-        }
-
-        for (Zamestnanec zamestnanec : zamestnanci.values()) {
-            zamestnanec.getSpoluprace().removeIf(s -> s.getSpolupracovnik().getId() == id);
-        }
-
-        return true;
-    }
-
-public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
-        if (id1 == id2) {
-            return false;
-        }
 
         Zamestnanec z1 = najitPodleId(id1);
         Zamestnanec z2 = najitPodleId(id2);
@@ -87,6 +64,23 @@ public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
 
         z1.pridatSpolupraci(new Spoluprace(z2, uroven));
         z2.pridatSpolupraci(new Spoluprace(z1, uroven));
+        return true;
+    }
+
+    public int pocetZamestnancu() {
+        return zamestnanci.size();
+    }
+
+    public boolean odstranit(int id) {
+        Zamestnanec z = zamestnanci.remove(id);
+        if (z == null) {
+            return false;
+        }
+
+        for (Zamestnanec zamestnanec : zamestnanci.values()) {
+            zamestnanec.getSpoluprace().removeIf(s -> s.getSpolupracovnik().getId() == id);
+        }
+
         return true;
     }
 
