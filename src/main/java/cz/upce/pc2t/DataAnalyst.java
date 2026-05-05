@@ -1,8 +1,6 @@
 package cz.upce.pc2t;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class DataAnalyst extends Zamestnanec {
@@ -25,20 +23,37 @@ public class DataAnalyst extends Zamestnanec {
         return "Analýza dat, hledání společných spolupracovníků";
     }
 
-     public List<Zamestnanec> najdiSpolecneSpolupracovniky(Zamestnanec druhy) {
+ public Zamestnanec najdiSpolupracovnikaSNejvicSpolecnymi() {
+        if (getSpoluprace().isEmpty()) {
+            return null;
+        }
+        Zamestnanec nejlepsi = null;
+        int maxPocet = 0;
+        for (Spoluprace s : getSpoluprace()) {
+            Zamestnanec kolega = s.getSpolupracovnik();
+            int pocet = pocetSpolecnychSpolupracovniku(kolega);
+            if (pocet > maxPocet) {
+                maxPocet = pocet;
+                nejlepsi = kolega;
+            }
+        }
+        return nejlepsi;
+    }
+
+     public int pocetSpolecnychSpolupracovniku(Zamestnanec druhy) {
         Set<Integer> mojeIds = new HashSet<>();
-        for (Spoluprace s : this.getSpoluprace()) {
+        for (Spoluprace s : getSpoluprace()) {
             mojeIds.add(s.getSpolupracovnik().getId());
         }
 
-        List<Zamestnanec> spolecni = new ArrayList<>();
-        Set<Integer> pridani = new HashSet<>();
+        Set<Integer> zapocitano = new HashSet<>();
+        int pocet = 0;
         for (Spoluprace s : druhy.getSpoluprace()) {
             int id = s.getSpolupracovnik().getId();
-            if (mojeIds.contains(id) && pridani.add(id)) {
-                spolecni.add(s.getSpolupracovnik());
+            if (id != this.getId() && mojeIds.contains(id) && zapocitano.add(id)) {
+                pocet++;
             }
         }
-        return spolecni;
+        return pocet;
     }
 }
