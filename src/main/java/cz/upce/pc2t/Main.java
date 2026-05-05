@@ -49,7 +49,7 @@ public class Main {
 
                     int ulozeno_soubor = FileIO.ulozitVsechny(ZAMESTNANCI_SOUBOR, databaze);
                     System.out.printf("Uloženo %d zaměstnanců do souboru '%s'.%n", ulozeno_soubor, ZAMESTNANCI_SOUBOR);
-
+                    
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
                 }
