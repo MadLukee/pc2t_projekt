@@ -49,6 +49,7 @@ public class DatabazZamestnancu {
         return vysledek;
     }
 
+    public boolean pridatSpolupraci(int id1, int id2, UrovenSpoluprace uroven) {
         Zamestnanec z1 = najitPodleId(id1);
         Zamestnanec z2 = najitPodleId(id2);
 

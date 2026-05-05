@@ -84,9 +84,9 @@ public class FileIO {
 
     private static Zamestnanec parsujZamestnance(String radka) {
         try {
-            String[] casti = radka.split("\\" + DELIMITER);
+            String[] casti = radka.split(java.util.regex.Pattern.quote(DELIMITER));
             if (casti.length != 5) {
-                System.out.printf("Varování: Řádek má špatný formát (očekáváno 5 polí, nalezeno %d): %s%n", casti.length, radka);
+                System.out.printf("Varování: řádek má špatný formát (očekáváno 5 polí, nalezeno %d): %s%n", casti.length, radka);
                 return null;
             }
 

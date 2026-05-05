@@ -1,4 +1,4 @@
-package cz.upce.pc2t;
+﻿package cz.upce.pc2t;
 
 import java.util.Scanner;
 import java.util.Map;
