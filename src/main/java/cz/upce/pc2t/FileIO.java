@@ -14,7 +14,7 @@ public class FileIO {
         try {
             Path path = Paths.get(filePath).toAbsolutePath();
             Files.createDirectories(path.getParent());
-
+            
             try (PrintWriter writer = new PrintWriter(new FileWriter(filePath, true))) {
                 String radka = formatujZamestnance(zamestnanec);
                 writer.println(radka);
@@ -59,7 +59,7 @@ public class FileIO {
         try {
             Path path = Paths.get(filePath).toAbsolutePath();
             Files.createDirectories(path.getParent());
-
+            
             try (PrintWriter writer = new PrintWriter(new FileWriter(filePath, false))) {
                 List<Zamestnanec> seznam = databaze.vsichniZamestnanci();
                 for (Zamestnanec z : seznam) {
