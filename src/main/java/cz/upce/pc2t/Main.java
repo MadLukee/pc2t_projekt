@@ -9,18 +9,21 @@ public class Main {
     private static final DatabazZamestnancu databaze = new DatabazZamestnancu();
     private static final Scanner scanner = new Scanner(System.in);
     private static final String ZAMESTNANCI_SOUBOR = "zamestnanci.txt";
+    private static boolean sqlDostupna = false;
 
     public static void main(String[] args) {
         System.out.println("=== Databáze zaměstnanců ===");
-         System.out.println();
+        System.out.println();
 
-         Database.inicializovat();
+        sqlDostupna = Database.inicializovat();
 
-        if (databaze.pocetZamestnancu() == 0) {
+        if (sqlDostupna) {
             int nacten = Database.nacistVsechny(databaze);
             if (nacten > 0) {
-                System.out.printf("Načteno %d zaměstnanců z databáze.%n", nacten);
+                System.out.printf("Načteno %d zaměstnanců ze SQL zálohy.%n", nacten);
             }
+        } else {
+            System.out.println("Pokračuji bez SQL zálohy.");
         }
 
         boolean bezi = true;
@@ -43,11 +46,13 @@ public class Main {
                 case "12" -> ulozitDoSouboru();
                 case "13" -> nacistZeSouboru();
                 case "0" -> {
-                    int ulozeno = Database.ulozitVsechny(databaze);
-                    System.out.printf("Uloženo %d zaměstnanců do databáze.%n", ulozeno);
 
-                    int ulozeno_soubor = FileIO.ulozitVsechny(ZAMESTNANCI_SOUBOR, databaze);
-                    System.out.printf("Uloženo %d zaměstnanců do souboru '%s'.%n", ulozeno_soubor, ZAMESTNANCI_SOUBOR);
+                     if (sqlDostupna) {
+                        int ulozeno = Database.ulozitVsechny(databaze);
+                        if (ulozeno > 0) {
+                            System.out.printf("Uloženo %d zaměstnanců do SQL zálohy.%n", ulozeno);
+                        }
+                    } 
                     
                     System.out.println("Ukončuji aplikaci...");
                     bezi = false;
@@ -75,7 +80,7 @@ public class Main {
         System.out.println("11. Zobrazit počty zaměstnanců ve skupinách");
         System.out.println("12. Uložit zaměstnance do souboru");
         System.out.println("13. Načíst zaměstnance ze souboru");
-        System.out.println("0. Ukončit (uloží data do SQL databáze)");
+        System.out.println("0. Ukončit (uloží zálohu do SQL)");
         System.out.print("Vaše volba: ");
     }
 
